@@ -1,6 +1,9 @@
 # ts-nodecg
 
+**This library is work in progress**
+
 Strongly typed NodeCG wrapper for messages and replicants
+
 
 ## Supported Methods:
 
