@@ -129,4 +129,4 @@ const createTypedNodeCGHelper = <
 	} as any;
 };
 
-export default createTypedNodeCGHelper
+export default createTypedNodeCGHelper;
