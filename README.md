@@ -1,4 +1,5 @@
 # ts-nodecg
+[![CircleCI](https://circleci.com/gh/Hoishin/ts-nodecg.svg?style=svg)](https://circleci.com/gh/Hoishin/ts-nodecg)
 
 Type your bundle with bundle specific definition like replicants and messages.
 
