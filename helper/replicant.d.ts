@@ -24,7 +24,6 @@ export class ReplicantCommon<
 		value?: unknown,
 		options?: {throwOnInvalid?: boolean},
 	): value is TSchema;
-	once(event: 'change', listener: (value: TSchema) => void): this;
 	value?: TSchema;
 }
 
@@ -42,6 +41,15 @@ export class ReplicantServer<
 		event: 'change',
 		listener: (newValue: TSchema, oldValue?: TSchema) => void,
 	): this;
+	once(
+		event: 'change',
+		listener: (newValue: TSchema, oldValue?: TSchema) => void,
+	): this;
+	removeListener(
+		event: 'change',
+		listener: (newValue: TSchema, oldValue?: TSchema) => void,
+	): this;
+	removeAllListeners(event: 'change'): this;
 }
 
 export class ReplicantBrowser<
@@ -56,14 +64,25 @@ export class ReplicantBrowser<
 		socket: SocketIOClient.Socket,
 	);
 	status: 'undeclared' | 'declared' | 'declaring';
-	on(
-		event: 'declared' | 'fullUpdate',
-		listener: (data: TSchema) => void,
+	on<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((newValue: TSchema, oldValue?: TSchema) => void)
+			: ((data: TSchema) => void),
 	): this;
-	on(
-		event: 'change',
-		listener: (newValue: TSchema, oldValue?: TSchema) => void,
+	once<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((newValue: TSchema, oldValue?: TSchema) => void)
+			: ((data: TSchema) => void),
 	): this;
+	removeListener<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((newValue: TSchema, oldValue?: TSchema) => void)
+			: ((data: TSchema) => void),
+	): this;
+	removeAllListeners(event: 'change' | 'declared' | 'fullUpdate'): this;
 }
 
 export type Replicant<

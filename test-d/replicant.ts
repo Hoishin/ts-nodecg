@@ -1,10 +1,11 @@
-import {expectError} from 'tsd';
+import {expectError, expectType} from 'tsd';
 import {CreateNodecgInstance} from '../browser';
 
 type OtherBundleRepMap = {
 	player: {playerId: string; country: string};
 };
 type ThisBundleRepMap = {
+	trashcan: {};
 	game: {gameId: string; players: [string, string]};
 };
 
@@ -19,10 +20,24 @@ type ThisBundle = CreateNodecgInstance<{}, 'this-bundle', ThisBundleRepMap, {}>;
 
 declare const nodecg: OtherBundle & ThisBundle;
 
-nodecg.Replicant('game');
-nodecg.Replicant('game', {});
-nodecg.Replicant('game', 'this-bundle');
-nodecg.Replicant('game', 'this-bundle', {});
+const gameRep = nodecg.Replicant('game');
+expectType<typeof gameRep>(nodecg.Replicant('game', {}));
+expectType<typeof gameRep>(nodecg.Replicant('game', 'this-bundle'));
+expectType<typeof gameRep>(nodecg.Replicant('game', 'this-bundle', {}));
+expectType<undefined | {}>(gameRep.value);
+gameRep.on('change', (newVal) => {
+	expectType<{gameId: string; players: [string, string]}>(newVal);
+});
+expectError(gameRep.on('changee', () => {}));
+gameRep.once('change', (newVal) => {
+	expectType<{gameId: string; players: [string, string]}>(newVal);
+});
+expectError(gameRep.once('cchange', () => {}));
+gameRep.removeListener('change', () => {});
+expectError(gameRep.removeListener('changeee', () => {}));
+gameRep.removeAllListeners('change');
+expectError(gameRep.removeAllListeners('chamge'));
+
 expectError(nodecg.Replicant('game', 'other-bundle'));
 expectError(nodecg.Replicant('game', 'other-bundle', {}));
 
