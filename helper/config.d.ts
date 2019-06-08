@@ -28,8 +28,3 @@ export type NodeCGConfig = {
 		enabled: boolean;
 	};
 }
-
-export type ConfigApi<TBundleConfig extends {}> = {
-	bundleConfig: TBundleConfig;
-	readonly config: NodeCGConfig;
-}

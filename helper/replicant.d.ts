@@ -140,7 +140,7 @@ export type ReplicantFactory<
 	  >
 	: {});
 
-export type TypedReplicantApi<
+export type ReplicantApi<
 	TBundleName extends string,
 	TRepMap extends ReplicantMap,
 	TPlatform extends Platform,

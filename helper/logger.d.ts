@@ -23,7 +23,3 @@ export interface LoggerOptions {
 		level: LoggerLevel;
 	};
 }
-
-export type LoggerApi = {
-	Logger: typeof Logger
-}

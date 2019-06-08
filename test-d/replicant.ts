@@ -1,5 +1,5 @@
 import {expectError} from 'tsd';
-import {TypedReplicantApi} from '../helper/replicant';
+import {ReplicantApi} from '../helper/replicant';
 
 type OtherBundleRepMap = {
 	player: {playerId: string; country: string};
@@ -8,13 +8,13 @@ type ThisBundleRepMap = {
 	game: {gameId: string; players: [string, string]};
 };
 
-type OtherBundle = TypedReplicantApi<
+type OtherBundle = ReplicantApi<
 	'other-bundle',
 	OtherBundleRepMap,
 	'browser',
 	true
 >;
-type ThisBundle = TypedReplicantApi<
+type ThisBundle = ReplicantApi<
 	'this-bundle',
 	ThisBundleRepMap,
 	'browser',
