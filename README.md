@@ -4,7 +4,9 @@ Type your bundle with bundle specific definition like replicants and messages.
 
 ## Usage
 
-Soon&trade;
+See [tests](https://github.com/Hoishin/ts-nodecg/tree/master/test-d).
+
+Documentation coming Soon&trade;
 
 ## License
 
