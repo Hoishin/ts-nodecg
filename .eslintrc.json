@@ -1,9 +1,0 @@
-{
-	"extends": ["@hoishin/ts", "prettier", "prettier/@typescript-eslint"],
-	"parserOptions": {
-		"project": "./tsconfig.json"
-	},
-	"rules": {
-		"@typescript-eslint/explicit-function-return-type": 0
-	}
-}

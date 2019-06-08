@@ -1,8 +1,14 @@
 {
-	"extends": "@hoishin/tsconfig",
 	"compilerOptions": {
-		"outDir": "lib",
-		"declaration": true
-	},
-	"include": ["src/**/*.ts", "src/**/*.tsx"]
+		"lib": ["es2018", "dom"],
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"keyofStringsOnly": true
+	}
 }

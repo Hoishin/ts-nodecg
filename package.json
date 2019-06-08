@@ -1,33 +1,40 @@
 {
 	"name": "ts-nodecg",
 	"version": "0.0.1-0",
-	"scripts": {
-		"build": "tsc",
-		"prepublishOnly": "yarn build"
-	},
-	"description": "Helpers to make NodeCG strictly typed",
+	"description": "Type your nodecg with bundle specific defintion",
+	"keywords": [
+		"nodecg",
+		"typescript"
+	],
 	"license": "MIT",
-	"husky": {
-		"pre-commit": "lint-staged"
+	"author": {
+		"name": "Keiichiro Amemiya",
+		"email": "hoishinxii@gmail.com",
+		"url": "https://hoish.in"
 	},
-	"lint-staged": {
-		"*.{ts,tsx,js,jsx,json,yml,yaml,md}": "prettier --write",
-		"*.{ts,tsx,js,jsx}": "eslint --fix",
-		"package.json": "sort-package-json"
+	"files": [
+		"helper",
+		"browser.d.ts",
+		"server.d.ts"
+	],
+	"scripts": {
+		"test": "tsd"
 	},
+	"prettier": "@hoishin/prettierrc",
 	"dependencies": {
-		"nodecg": "^1.4.0"
+		"@types/express": "^4.17.0",
+		"@types/node": "^10.14.8",
+		"@types/socket.io": "^2.1.2",
+		"@types/socket.io-client": "^1.4.32",
+		"@types/soundjs": "^0.6.27"
 	},
 	"devDependencies": {
-		"@hoishin/eslint-config-ts": "^0.0.5",
 		"@hoishin/prettierrc": "^2.1.1",
-		"@hoishin/tsconfig": "^1.0.0",
-		"eslint": "^5.16.0",
-		"eslint-config-prettier": "^4.3.0",
-		"husky": "^2.3.0",
-		"lint-staged": "^8.1.7",
-		"prettier": "^1.17.1",
-		"sort-package-json": "^1.22.1",
-		"typescript": "3.4.5"
+		"prettier": "^1.18.2",
+		"tsd": "^0.7.3",
+		"typescript": "^3.5.1"
+	},
+	"peerDependencies": {
+		"typescript": "*"
 	}
 }
