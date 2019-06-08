@@ -14,6 +14,7 @@
 	},
 	"files": [
 		"helper",
+		"index.d.ts",
 		"browser.d.ts",
 		"server.d.ts"
 	],
