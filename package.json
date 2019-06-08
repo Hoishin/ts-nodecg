@@ -21,6 +21,7 @@
 		"server.d.ts"
 	],
 	"scripts": {
+		"fmt": "prettier \"**/*.{ts,json,md,yml,yaml}\" --write",
 		"test": "tsd"
 	},
 	"prettier": "@hoishin/prettierrc",

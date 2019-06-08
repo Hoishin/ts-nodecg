@@ -27,4 +27,4 @@ export type NodeCGConfig = {
 	ssl?: {
 		enabled: boolean;
 	};
-}
+};
