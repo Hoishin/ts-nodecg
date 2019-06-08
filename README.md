@@ -3,6 +3,20 @@
 
 Type your bundle with bundle specific definition like replicants and messages.
 
+## Install
+
+```
+npm i -D ts-nodecg
+```
+
+or
+
+```
+yarn add -D ts-nodecg
+```
+
+**TypeScript 3.5 or newer is recommended**
+
 ## Usage
 
 See [tests](https://github.com/Hoishin/ts-nodecg/tree/master/test-d).
