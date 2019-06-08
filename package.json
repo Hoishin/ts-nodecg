@@ -6,6 +6,8 @@
 		"nodecg",
 		"typescript"
 	],
+	"homepage": "https://github.com/hoishin/ts-nodecg",
+	"repository": "https://github.com/hoishin/ts-nodecg",
 	"license": "MIT",
 	"author": {
 		"name": "Keiichiro Amemiya",
