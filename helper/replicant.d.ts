@@ -112,3 +112,16 @@ export type ReplicantFactory<
 				| [TBundleName, ReplicantOptions<TRepMap[TRepName]>?]
 				| [ReplicantOptions<TRepMap[TRepName]>?])
 ) => Replicant<TRepMap[TRepName], TRepName, TBundleName, TPlatform>;
+
+export type WaitForReplicants<
+	TRepMap extends ReplicantMap,
+	TBundleName extends string,
+	TPlatform extends Platform
+> = (
+	...replicants: Replicant<
+		TRepMap[keyof TRepMap],
+		keyof TRepMap,
+		TBundleName,
+		TPlatform
+	>[]
+) => Promise<void>;

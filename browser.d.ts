@@ -1,6 +1,15 @@
 import {NodeCG} from './helper/nodecg';
-import {ReplicantMap} from './helper/replicant';
-import {MessageMap} from './helper/message';
+import {
+	ReplicantMap,
+	ReplicantFactory,
+	ReadReplicant,
+	WaitForReplicants,
+} from './helper/replicant';
+import {
+	MessageMap,
+	SendMessageToBundleBrowser,
+	SendMessageToBundle,
+} from './helper/message';
 
 interface Cue {
 	name: string;
@@ -44,7 +53,8 @@ export type CreateNodecgConstructor<
 	TBundleConfig extends {},
 	TBundleName extends string,
 	TReplicantMap extends ReplicantMap,
-	TMessageMap extends MessageMap
+	TMessageMap extends MessageMap,
+	TForOthers extends boolean = false
 > = {
 	new (bundle: unknown, socket: SocketIOClient.Socket): CreateNodecgInstance<
 		TBundleConfig,
@@ -53,4 +63,24 @@ export type CreateNodecgConstructor<
 		TMessageMap
 	>;
 	version: string;
+
+	sendMessageToBundle: SendMessageToBundle<
+		TMessageMap,
+		'browser',
+		TBundleName
+	>;
+
+	Replicant: ReplicantFactory<
+		TBundleName,
+		TReplicantMap,
+		'browser',
+		TForOthers
+	>;
+	readReplicant: ReadReplicant<
+		'browser',
+		TForOthers,
+		TReplicantMap,
+		TBundleName
+	>;
+	waitForReplicants: WaitForReplicants<TReplicantMap, TBundleName, 'browser'>;
 };
