@@ -3,6 +3,9 @@
 
 Type your bundle with bundle specific definition like replicants and messages.
 
+This library replaces the type definition in NodeCG core (`nodecg/types/{browser,server}.d.ts`).
+If you use this library, don't use the type definition in NodeCG core.
+
 ## Install
 
 ```
