@@ -1,8 +1,13 @@
 import {Logger} from './logger';
-import {ReplicantApi, ReplicantMap} from './replicant';
+import {ReplicantMap, ReplicantFactory, ReadReplicant} from './replicant';
 import {NodeCGConfig} from './config';
 import {Platform} from './platform';
-import {MessageApi, MessageMap} from './message';
+import {
+	MessageMap,
+	SendMessageToBundle,
+	ListenFor,
+	SendMessage,
+} from './message';
 
 type NodeCG<
 	TPlatform extends Platform,
@@ -12,8 +17,11 @@ type NodeCG<
 	TReplicantMap extends ReplicantMap,
 	TMessageMap extends MessageMap
 > = {
+	readonly config: NodeCGConfig;
+
 	bundleName: TBundleName;
 	bundleVersion: string;
+	bundleConfig: TBundleConfig;
 	readonly bundleGit: {
 		branch: string;
 		hash: string;
@@ -21,9 +29,30 @@ type NodeCG<
 		date?: Date;
 		message?: string;
 	};
+
 	log: Logger;
 	Logger: typeof Logger;
-	bundleConfig: TBundleConfig;
-	readonly config: NodeCGConfig;
-} & MessageApi<TMessageMap, TBundleName, TPlatform, TForOthers> &
-	ReplicantApi<TBundleName, TReplicantMap, TPlatform, TForOthers>;
+
+	Replicant: ReplicantFactory<
+		TBundleName,
+		TReplicantMap,
+		TPlatform,
+		TForOthers
+	>;
+	readReplicant: ReadReplicant<
+		TPlatform,
+		TForOthers,
+		TReplicantMap,
+		TBundleName
+	>;
+
+	sendMessageToBundle: SendMessageToBundle<
+		TMessageMap,
+		TPlatform,
+		TBundleName
+	>;
+	listenFor: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
+	unlinsten: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
+} & (TForOthers extends true
+	? {}
+	: {sendMessage: SendMessage<TMessageMap, TPlatform>});

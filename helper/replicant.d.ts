@@ -15,10 +15,10 @@ export class ReplicantCommon<
 	TBundleName extends string,
 	TRepName extends string
 > extends EventEmitter {
-	log: Logger;
 	name: TRepName;
 	namespace: TBundleName;
 	opts: ReplicantOptions<TSchema>;
+	log: Logger;
 	revision: number;
 	validate(
 		value?: unknown,
@@ -34,8 +34,8 @@ export class ReplicantServer<
 	TRepName extends string
 > extends ReplicantCommon<TSchema, TBundleName, TRepName> {
 	constructor(
-		name: string,
-		namespace?: string,
+		name: TRepName,
+		namespace?: TBundleName,
 		opts?: ReplicantOptions<TSchema>,
 	);
 	on(
@@ -50,8 +50,8 @@ export class ReplicantBrowser<
 	TRepName extends string
 > extends ReplicantCommon<TSchema, TBundleName, TRepName> {
 	constructor(
-		name: string,
-		namespace: string,
+		name: TRepName,
+		namespace: TBundleName,
 		opts: ReplicantOptions<TSchema>,
 		socket: SocketIOClient.Socket,
 	);
@@ -82,34 +82,21 @@ export type ReadReplicant<
 	TForOthers extends boolean,
 	TRepMap extends ReplicantMap,
 	TBundleName extends string
-> = TPlatform extends 'server'
-	? {
-			<TReplicantName extends keyof TRepMap>(
-				name: TReplicantName,
-				namespace: TBundleName,
-			): TRepMap[TReplicantName];
-	  } & (TForOthers extends false
-			? {
-					<TReplicantName extends keyof TRepMap>(
-						name: TReplicantName,
-					): TRepMap[TReplicantName];
-			  }
-			: {})
+> = <TRepName extends keyof TRepMap>(
+	name: TRepName,
+	...args: TPlatform extends 'server'
+		? (TForOthers extends true ? [TBundleName] : [TBundleName?])
+		: TPlatform extends 'browser'
+		? (
+				| [TBundleName, ((value: TRepMap[TRepName]) => void)]
+				| (TForOthers extends true
+						? never
+						: [((value: TRepMap[TRepName]) => void)]))
+		: never
+) => TPlatform extends 'server'
+	? TRepMap[TRepName]
 	: TPlatform extends 'browser'
-	? {
-			<TReplicantName extends keyof TRepMap>(
-				name: TReplicantName,
-				namespace: TBundleName,
-				cb: (value: TRepMap[TReplicantName]) => void,
-			): void;
-	  } & (TForOthers extends false
-			? {
-					<TReplicantName extends keyof TRepMap>(
-						name: TReplicantName,
-						cb: (value: TRepMap[TReplicantName]) => void,
-					): void;
-			  }
-			: {})
+	? void
 	: never;
 
 export type ReplicantFactory<
@@ -117,35 +104,11 @@ export type ReplicantFactory<
 	TRepMap extends ReplicantMap,
 	TPlatform extends Platform,
 	TForOthers extends boolean
-> = {
-	<TReplicantName extends keyof TRepMap>(
-		name: TReplicantName,
-		namespace: TBundleName,
-		opts?: ReplicantOptions<TRepMap[TReplicantName]>,
-	): Replicant<
-		TRepMap[TReplicantName],
-		TReplicantName,
-		TBundleName,
-		TPlatform
-	>;
-} & (TForOthers extends false
-	? <TReplicantName extends keyof TRepMap>(
-			name: TReplicantName,
-			opts?: ReplicantOptions<TRepMap[TReplicantName]>,
-	  ) => Replicant<
-			TRepMap[TReplicantName],
-			TReplicantName,
-			TBundleName,
-			TPlatform
-	  >
-	: {});
-
-export type ReplicantApi<
-	TBundleName extends string,
-	TRepMap extends ReplicantMap,
-	TPlatform extends Platform,
-	TForOthers extends boolean
-> = {
-	Replicant: ReplicantFactory<TBundleName, TRepMap, TPlatform, TForOthers>;
-	readReplicant: ReadReplicant<TPlatform, TForOthers, TRepMap, TBundleName>;
-};
+> = <TRepName extends keyof TRepMap>(
+	name: TRepName,
+	...args: TForOthers extends true
+		? [TBundleName, ReplicantOptions<TRepMap[TRepName]>?]
+		: (
+				| [TBundleName, ReplicantOptions<TRepMap[TRepName]>?]
+				| [ReplicantOptions<TRepMap[TRepName]>?])
+) => Replicant<TRepMap[TRepName], TRepName, TBundleName, TPlatform>;

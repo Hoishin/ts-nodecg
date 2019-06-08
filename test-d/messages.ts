@@ -1,4 +1,5 @@
-import {MessageApi} from '../helper/message';
+import {CreateNodecgInstance} from '../browser';
+import {expectType, expectError} from 'tsd';
 
 class CustomError extends Error {}
 
@@ -7,30 +8,36 @@ type OtherBundleMsgMap = {
 	updateNumber: {data: number; result: boolean; error: CustomError};
 };
 type ThisBundleMsgMap = {
+	ping: {};
 	increment: {data: 1 | 2 | 3};
 	updateName: {data: string; result: {name: string; age: string}};
+	updatePlace: {data: string; error: CustomError};
 };
 
-type OtherBundle = MessageApi<
-	OtherBundleMsgMap,
+type OtherBundle = CreateNodecgInstance<
+	{},
 	'other-bundle',
-	'server',
+	{},
+	OtherBundleMsgMap,
 	true
 >;
-type ThisBundle = MessageApi<
-	ThisBundleMsgMap,
-	'this-bundle',
-	'server',
-	false
->;
+type ThisBundle = CreateNodecgInstance<{}, 'this-bundle', {}, ThisBundleMsgMap>;
 
 declare const nodecg: ThisBundle & OtherBundle;
 
-nodecg.sendMessage('increment', 1);
-nodecg.sendMessageToBundle('updateNumber', 'other-bundle', 123);
-nodecg.listenFor('updateName', 'this-bundle', (data, cb) => {
-	console.log(data);
-	if (cb && !cb.handled) {
-		cb({name: 'foo', age: '12yo'});
-	}
-});
+expectType<Promise<void>>(nodecg.sendMessage('ping'));
+expectError(nodecg.sendMessage('ping', 'foobar'));
+expectType<Promise<void>>(nodecg.sendMessage('increment', 2));
+expectType<void>(
+	nodecg.sendMessage('updateName', 'mr foo', (err, result) => {
+		expectType<unknown>(err);
+		expectType<string>(result.age);
+	}),
+);
+expectError(nodecg.sendMessage('updatePlace', () => {}));
+expectType<void>(
+	nodecg.sendMessage('updatePlace', 'smile', (err) => {
+		expectType<CustomError | null>(err);
+	}),
+);
+expectError(nodecg.sendMessage('updateNumber'));

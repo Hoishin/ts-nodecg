@@ -1,5 +1,5 @@
 import {expectError} from 'tsd';
-import {ReplicantApi} from '../helper/replicant';
+import {CreateNodecgInstance} from '../browser';
 
 type OtherBundleRepMap = {
 	player: {playerId: string; country: string};
@@ -8,18 +8,14 @@ type ThisBundleRepMap = {
 	game: {gameId: string; players: [string, string]};
 };
 
-type OtherBundle = ReplicantApi<
+type OtherBundle = CreateNodecgInstance<
+	{},
 	'other-bundle',
 	OtherBundleRepMap,
-	'browser',
+	{},
 	true
 >;
-type ThisBundle = ReplicantApi<
-	'this-bundle',
-	ThisBundleRepMap,
-	'browser',
-	false
->;
+type ThisBundle = CreateNodecgInstance<{}, 'this-bundle', ThisBundleRepMap, {}>;
 
 declare const nodecg: OtherBundle & ThisBundle;
 

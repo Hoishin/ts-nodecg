@@ -12,21 +12,24 @@ export type CreateNodecgInstance<
 	TBundleConfig extends {},
 	TBundleName extends string,
 	TReplicantMap extends ReplicantMap,
-	TMessageMap extends MessageMap
+	TMessageMap extends MessageMap,
+	TForOthers extends boolean = false
 > = NodeCG<
 	'browser',
 	TBundleConfig,
 	TBundleName,
-	false,
+	TForOthers,
 	TReplicantMap,
 	TMessageMap
 > & {
 	socket: SocketIOClient.Socket;
+
 	getDialog(
 		name: string,
 		bundle?: string,
 	): ReturnType<ParentNode['querySelector']>;
-	getDialogDocument(name: string, bundle?: string): Document;
+	getDialogDocument(name: string, bundle?: TBundleName): Document;
+
 	findCue(cueName: string): Cue | undefined;
 	playSound(
 		cueName: string,
