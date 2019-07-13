@@ -26,17 +26,17 @@
 	},
 	"prettier": "@hoishin/prettierrc",
 	"dependencies": {
-		"@types/express": "^4.17.0",
-		"@types/node": "^10.14.8",
-		"@types/socket.io": "^2.1.2",
-		"@types/socket.io-client": "^1.4.32",
-		"@types/soundjs": "^0.6.27"
+		"@types/express": "4.17.0",
+		"@types/node": "10.14.8",
+		"@types/socket.io": "2.1.2",
+		"@types/socket.io-client": "1.4.32",
+		"@types/soundjs": "0.6.27"
 	},
 	"devDependencies": {
-		"@hoishin/prettierrc": "^2.1.1",
-		"prettier": "^1.18.2",
-		"tsd": "^0.7.3",
-		"typescript": "^3.5.1"
+		"@hoishin/prettierrc": "2.1.1",
+		"prettier": "1.18.2",
+		"tsd": "0.7.3",
+		"typescript": "3.5.1"
 	},
 	"peerDependencies": {
 		"typescript": ">=3.5"
