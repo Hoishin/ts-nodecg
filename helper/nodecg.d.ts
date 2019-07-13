@@ -52,7 +52,7 @@ type NodeCG<
 		TBundleName
 	>;
 	listenFor: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
-	unlinsten: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
+	unlisten: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
 } & (TForOthers extends true
 	? {}
 	: {sendMessage: SendMessage<TMessageMap, TPlatform>});
