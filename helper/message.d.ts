@@ -133,10 +133,14 @@ type ListenForServer<
 						| {
 								handled: false;
 								(
-									error:
-										| TMessageMap[TMessageName]['error']
-										| null,
+									error: null,
 									result: TMessageMap[TMessageName]['result'],
+								): void;
+						  }
+						| {
+								handled: false;
+								(
+									error: TMessageMap[TMessageName]['error'],
 								): void;
 						  },
 				) => void),
