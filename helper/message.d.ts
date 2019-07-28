@@ -136,9 +136,6 @@ type ListenForServer<
 									error: null,
 									result: TMessageMap[TMessageName]['result'],
 								): void;
-						  }
-						| {
-								handled: false;
 								(
 									error: TMessageMap[TMessageName]['error'],
 								): void;
@@ -159,9 +156,6 @@ type ListenForServer<
 											error: null,
 											result: TMessageMap[TMessageName]['result'],
 										): void;
-								  }
-								| {
-										handled: false;
 										(
 											error: TMessageMap[TMessageName]['error'],
 										): void;
