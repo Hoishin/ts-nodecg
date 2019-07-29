@@ -138,86 +138,67 @@ export type CreateNodecgInstance<
 	stopAllSounds(): void;
 	soundReady?: boolean;
 	sendMessageToBundle: SendMessageToBundle<TBundleName, TMessageMap>;
-} & TForOtherBundle extends true
-	? {
-			listenFor<TName extends keyof TMessageMap & string>(
-				messageName: TName,
-				bundleName: TBundleName,
-				handlerFunc: (data: TMessageMap[TName]['data']) => void,
-			): void;
-
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-				bundleName: TBundleConfig,
-				cb: (value: TReplicantMap[TName]) => void,
-			): void;
-
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				bundleName: TBundleName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TReplicantMap[TName] | undefined
-			>;
-	  }
-	: {
-			getDialogDocument(name: string): Document;
-			getDialog(name: string): ReturnType<ParentNode['querySelector']>;
-
-			sendMessage: SendMessage<TMessageMap>;
-
-			listenFor<TName extends keyof TMessageMap & string>(
-				messageName: TName,
-				handlerFunc: (data: TMessageMap[TName]['data']) => void,
-			): void;
-			listenFor<TName extends keyof TMessageMap & string>(
-				messageName: TName,
-				bundleName: TBundleName,
-				handlerFunc: (data: TMessageMap[TName]['data']) => void,
-			): void;
-
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-				cb: (value: TReplicantMap[TName]) => void,
-			): void;
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-				bundleName: TBundleConfig,
-				cb: (value: TReplicantMap[TName]) => void,
-			): void;
-
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TReplicantMap[TName] | undefined
-			>;
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				bundleName: TBundleName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TReplicantMap[TName] | undefined
-			>;
-	  };
+	listenFor<TName extends keyof TMessageMap & string>(
+		messageName: TName,
+		bundleName: TBundleName,
+		handlerFunc: (data: TMessageMap[TName]['data']) => void,
+	): void;
+	unlisten<TName extends keyof TMessageMap & string>(
+		messageName: TName,
+		bundleName: TBundleName,
+		handlerFunc: (data: TMessageMap[TName]['data']) => void,
+	): void;
+	readReplicant<TName extends keyof TReplicantMap & string>(
+		name: TName,
+		bundleName: TBundleConfig,
+		cb: (value: TReplicantMap[TName]) => void,
+	): void;
+	Replicant<
+		TName extends keyof TReplicantMap & string,
+		TOptions extends ReplicantOptions<TReplicantMap[TName]>
+	>(
+		name: TName,
+		bundleName: TBundleName,
+		options?: TOptions,
+	): Replicant<
+		TBundleName,
+		TReplicantMap,
+		TName,
+		TReplicantMap[TName] | undefined
+	>;
+} & (TForOtherBundle extends true
+		? {}
+		: {
+				getDialogDocument(name: string): Document;
+				getDialog(
+					name: string,
+				): ReturnType<ParentNode['querySelector']>;
+				sendMessage: SendMessage<TMessageMap>;
+				listenFor<TName extends keyof TMessageMap & string>(
+					messageName: TName,
+					handlerFunc: (data: TMessageMap[TName]['data']) => void,
+				): void;
+				unlisten<TName extends keyof TMessageMap & string>(
+					messageName: TName,
+					handlerFunc: (data: TMessageMap[TName]['data']) => void,
+				): void;
+				readReplicant<TName extends keyof TReplicantMap & string>(
+					name: TName,
+					cb: (value: TReplicantMap[TName]) => void,
+				): void;
+				Replicant<
+					TName extends keyof TReplicantMap & string,
+					TOptions extends ReplicantOptions<TReplicantMap[TName]>
+				>(
+					name: TName,
+					options?: TOptions,
+				): Replicant<
+					TBundleName,
+					TReplicantMap,
+					TName,
+					TReplicantMap[TName] | undefined
+				>;
+		  });
 
 export type CreateNodecgConstructor<
 	TBundleName extends string,

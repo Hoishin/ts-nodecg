@@ -71,17 +71,26 @@ export type CreateNodecgInstance<
 		bundleName: TBundleName,
 		data: TMessageMap[TName]['data'],
 	): void;
-} & TForOtherBundle extends true
-	? {
-			listenFor<TName extends keyof TMessageMap & string>(
-				messageName: TForOtherBundle extends true ? TName : never,
-				bundleName: TBundleName,
-				handlerFunc: (
-					data: TMessageMap[TName]['data'],
-					cb:
-						| undefined
-						| {handled: true}
-						| {
+	listenFor<TName extends keyof TMessageMap & string>(
+		messageName: TForOtherBundle extends true ? TName : never,
+		bundleName: TBundleName,
+		handlerFunc: (
+			data: TMessageMap[TName]['data'],
+			cb:
+				| undefined
+				| {handled: true}
+				| (unknown extends TMessageMap[TName]['result']
+						? {
+								handled: false;
+								<
+									TError extends
+										| TMessageMap[TName]['error']
+										| null
+								>(
+									error: TError,
+								): void;
+						  }
+						: {
 								handled: false;
 								<
 									TError extends
@@ -98,134 +107,99 @@ export type CreateNodecgInstance<
 								>(
 									error: TError extends null ? never : TError,
 								): void;
-						  },
-				) => void,
-			): void;
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-				bundleName: TBundleName,
-			): TReplicantMap[TName];
-
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				bundleName: TBundleName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TOptions extends {defaultValue: TReplicantMap[TName]}
-					? TReplicantMap[TName]
-					: TReplicantMap[TName] | undefined
-			>;
-	  }
-	: {
-			sendMessage<TName extends keyof TMessageMap & string>(
-				name: unknown extends TMessageMap[TName]['data']
-					? TName
-					: never,
-			): void;
-			sendMessage<TName extends keyof TMessageMap & string>(
-				name: unknown extends TMessageMap[TName]['data']
-					? never
-					: TName,
-				data: TMessageMap[TName]['data'],
-			): void;
-
-			listenFor<TName extends keyof TMessageMap & string>(
-				name: TForOtherBundle extends true ? never : TName,
-				handlerFunc: (
+						  }),
+		) => void,
+	): void;
+	readReplicant<TName extends keyof TReplicantMap & string>(
+		name: TName,
+		bundleName: TBundleName,
+	): TReplicantMap[TName];
+	Replicant<
+		TName extends keyof TReplicantMap & string,
+		TOptions extends ReplicantOptions<TReplicantMap[TName]>
+	>(
+		name: TName,
+		bundleName: TBundleName,
+		options?: TOptions,
+	): Replicant<
+		TBundleName,
+		TReplicantMap,
+		TName,
+		TOptions extends {defaultValue: TReplicantMap[TName]}
+			? TReplicantMap[TName]
+			: TReplicantMap[TName] | undefined
+	>;
+} & (TForOtherBundle extends true
+		? {}
+		: {
+				sendMessage<TName extends keyof TMessageMap & string>(
+					name: unknown extends TMessageMap[TName]['data']
+						? TName
+						: never,
+				): void;
+				sendMessage<TName extends keyof TMessageMap & string>(
+					name: unknown extends TMessageMap[TName]['data']
+						? never
+						: TName,
 					data: TMessageMap[TName]['data'],
-					cb:
-						| undefined
-						| {handled: true}
-						| {
-								handled: false;
-								<
-									TError extends
-										| TMessageMap[TName]['error']
-										| null
-								>(
-									error: TError extends null ? TError : never,
-									result: TMessageMap[TName]['result'],
-								): void;
-								<
-									TError extends
-										| TMessageMap[TName]['error']
-										| null
-								>(
-									error: TError extends null ? never : TError,
-								): void;
-						  },
-				) => void,
-			): void;
-			listenFor<TName extends keyof TMessageMap & string>(
-				messageName: TForOtherBundle extends true ? TName : never,
-				bundleName: TBundleName,
-				handlerFunc: (
-					data: TMessageMap[TName]['data'],
-					cb:
-						| undefined
-						| {handled: true}
-						| {
-								handled: false;
-								<
-									TError extends
-										| TMessageMap[TName]['error']
-										| null
-								>(
-									error: TError extends null ? TError : never,
-									result: TMessageMap[TName]['result'],
-								): void;
-								<
-									TError extends
-										| TMessageMap[TName]['error']
-										| null
-								>(
-									error: TError extends null ? never : TError,
-								): void;
-						  },
-				) => void,
-			): void;
-
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-			): TReplicantMap[TName];
-			readReplicant<TName extends keyof TReplicantMap & string>(
-				name: TName,
-				bundleName: TBundleName,
-			): TReplicantMap[TName];
-
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TOptions extends {defaultValue: TReplicantMap[TName]}
-					? TReplicantMap[TName]
-					: TReplicantMap[TName] | undefined
-			>;
-			Replicant<
-				TName extends keyof TReplicantMap & string,
-				TOptions extends ReplicantOptions<TReplicantMap[TName]>
-			>(
-				name: TName,
-				bundleName: TBundleName,
-				options?: TOptions,
-			): Replicant<
-				TBundleName,
-				TReplicantMap,
-				TName,
-				TOptions extends {defaultValue: TReplicantMap[TName]}
-					? TReplicantMap[TName]
-					: TReplicantMap[TName] | undefined
-			>;
-	  };
+				): void;
+				listenFor<TName extends keyof TMessageMap & string>(
+					name: TForOtherBundle extends true ? never : TName,
+					handlerFunc: (
+						data: TMessageMap[TName]['data'],
+						cb:
+							| undefined
+							| {handled: true}
+							| (unknown extends TMessageMap[TName]['result']
+									? {
+											handled: false;
+											<
+												TError extends
+													| TMessageMap[TName]['error']
+													| null
+											>(
+												error: TError,
+											): void;
+									  }
+									: {
+											handled: false;
+											<
+												TError extends
+													| TMessageMap[TName]['error']
+													| null
+											>(
+												error: TError extends null
+													? TError
+													: never,
+												result: TMessageMap[TName]['result'],
+											): void;
+											<
+												TError extends
+													| TMessageMap[TName]['error']
+													| null
+											>(
+												error: TError extends null
+													? never
+													: TError,
+											): void;
+									  }),
+					) => void,
+				): void;
+				readReplicant<TName extends keyof TReplicantMap & string>(
+					name: TName,
+				): TReplicantMap[TName];
+				Replicant<
+					TName extends keyof TReplicantMap & string,
+					TOptions extends ReplicantOptions<TReplicantMap[TName]>
+				>(
+					name: TName,
+					options?: TOptions,
+				): Replicant<
+					TBundleName,
+					TReplicantMap,
+					TName,
+					TOptions extends {defaultValue: TReplicantMap[TName]}
+						? TReplicantMap[TName]
+						: TReplicantMap[TName] | undefined
+				>;
+		  });
