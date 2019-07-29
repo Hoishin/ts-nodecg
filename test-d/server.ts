@@ -1,24 +1,42 @@
-import {expectError, expectType} from 'tsd';
-import {CreateNodecgInstance} from '../browser';
+import {CreateNodecgInstance} from '../server';
+import {expectType, expectError} from 'tsd';
 
-type OtherBundleRepMap = {
-	player: {playerId: string; country: string};
-};
-type ThisBundleRepMap = {
-	trashcan: {};
-	game: {gameId: string; players: [string, string]};
-};
+class CustomError extends Error {}
 
+type ThisBundle = CreateNodecgInstance<
+	'this-bundle',
+	{},
+	{
+		trashcan: {};
+		game: {gameId: string; players: [string, string]};
+	},
+	{
+		ping: {};
+		increment: {data: 1 | 2 | 3};
+		updateName: {data: string; result: {name: string; age: string}};
+		updatePlace: {data: string; error: CustomError};
+	}
+>;
 type OtherBundle = CreateNodecgInstance<
-	{},
 	'other-bundle',
-	OtherBundleRepMap,
 	{},
+	{
+		player: {playerId: string; country: string};
+	},
+	{
+		increment: {};
+		updateNumber: {data: number; result: boolean; error: CustomError};
+	},
 	true
 >;
-type ThisBundle = CreateNodecgInstance<{}, 'this-bundle', ThisBundleRepMap, {}>;
 
-declare const nodecg: OtherBundle & ThisBundle;
+declare const nodecg: ThisBundle & OtherBundle;
+
+expectType<void>(nodecg.sendMessage('ping'));
+expectError(nodecg.sendMessage('ping', 'foobar'));
+expectType<void>(nodecg.sendMessage('increment', 2));
+expectError(nodecg.sendMessage('updatePlace', () => {}));
+expectError(nodecg.sendMessage('updateNumber'));
 
 const gameRep = nodecg.Replicant('game');
 expectType<typeof gameRep>(nodecg.Replicant('game', {}));
@@ -48,18 +66,12 @@ expectError(nodecg.Replicant('player', 'this-bundle', {}));
 nodecg.Replicant('player', 'other-bundle');
 nodecg.Replicant('player', 'other-bundle', {});
 
-nodecg.readReplicant('game', (value) => {
-	console.log(value.players[1]);
-});
-nodecg.readReplicant('game', 'this-bundle', (value) => {
-	console.log(value.players[1]);
-});
+nodecg.readReplicant('game');
+nodecg.readReplicant('game', 'this-bundle');
 
 expectError(
 	nodecg.readReplicant('player', () => {
 		// ...
 	}),
 );
-nodecg.readReplicant('player', 'other-bundle', (value) => {
-	console.log(value.country);
-});
+nodecg.readReplicant('player', 'other-bundle');

@@ -1,24 +1,10 @@
 import {Logger} from './logger';
-import {ReplicantMap, ReplicantFactory, ReadReplicant} from './replicant';
+import {ReplicantMap} from './replicant';
 import {NodeCGConfig} from './config';
-import {Platform} from './platform';
-import {
-	MessageMap,
-	SendMessageToBundle,
-	ListenFor,
-	SendMessage,
-} from './message';
+import {MessageMap} from './message';
 
-type NodeCG<
-	TPlatform extends Platform,
-	TBundleConfig extends {},
-	TBundleName extends string,
-	TForOthers extends boolean,
-	TReplicantMap extends ReplicantMap,
-	TMessageMap extends MessageMap
-> = {
+export type NodecgCommon<TBundleName extends string, TBundleConfig> = {
 	readonly config: NodeCGConfig;
-
 	bundleName: TBundleName;
 	bundleVersion: string;
 	bundleConfig: TBundleConfig;
@@ -29,30 +15,6 @@ type NodeCG<
 		date?: Date;
 		message?: string;
 	};
-
 	log: Logger;
 	Logger: typeof Logger;
-
-	Replicant: ReplicantFactory<
-		TBundleName,
-		TReplicantMap,
-		TPlatform,
-		TForOthers
-	>;
-	readReplicant: ReadReplicant<
-		TPlatform,
-		TForOthers,
-		TReplicantMap,
-		TBundleName
-	>;
-
-	sendMessageToBundle: SendMessageToBundle<
-		TMessageMap,
-		TPlatform,
-		TBundleName
-	>;
-	listenFor: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
-	unlisten: ListenFor<TMessageMap, TBundleName, TPlatform, TForOthers>;
-} & (TForOthers extends true
-	? {}
-	: {sendMessage: SendMessage<TMessageMap, TPlatform>});
+};

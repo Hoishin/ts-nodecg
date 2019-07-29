@@ -1,6 +1,6 @@
 import {LoggerOptions} from './logger';
 
-export type NodeCGConfig = {
+export interface NodeCGConfig {
 	host: string;
 	port: number;
 	developer: boolean;
@@ -27,4 +27,4 @@ export type NodeCGConfig = {
 	ssl?: {
 		enabled: boolean;
 	};
-};
+}

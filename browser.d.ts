@@ -1,44 +1,134 @@
-import {NodeCG} from './helper/nodecg';
+/// <reference lib="es2015" />
+/// <reference lib="dom" />
+/// <reference types="socket.io-client" />
+/// <reference types="soundjs" />
+
+import {NodecgCommon} from './helper/nodecg';
 import {
 	ReplicantMap,
-	ReplicantFactory,
-	ReadReplicant,
-	WaitForReplicants,
+	ReplicantCommon,
+	ReplicantOptions,
 } from './helper/replicant';
-import {
-	MessageMap,
-	SendMessageToBundleBrowser,
-	SendMessageToBundle,
-} from './helper/message';
+import {MessageMap} from './helper/message';
 
-interface Cue {
+export interface Cue {
 	name: string;
 	assignable: boolean;
 	defaultFile: string;
 }
 
-export type CreateNodecgInstance<
-	TBundleConfig extends {},
+export type SendMessage<TMessageMap extends MessageMap> = {
+	<TName extends keyof TMessageMap & string>(
+		name: unknown extends TMessageMap[TName]['data'] ? TName : never,
+	): Promise<
+		unknown extends TMessageMap[TName]['result']
+			? void
+			: TMessageMap[TName]['result']
+	>;
+	<TName extends keyof TMessageMap & string>(
+		name: unknown extends TMessageMap[TName]['data'] ? TName : never,
+		cb: (
+			error: TMessageMap[TName]['error'] | null,
+			result: TMessageMap[TName]['result'],
+		) => void,
+	): void;
+	<TName extends keyof TMessageMap & string>(
+		name: unknown extends TMessageMap[TName]['data'] ? never : TName,
+		data: TMessageMap[TName]['data'],
+	): Promise<
+		unknown extends TMessageMap[TName]['result']
+			? void
+			: TMessageMap[TName]['result']
+	>;
+	<TName extends keyof TMessageMap & string>(
+		name: unknown extends TMessageMap[TName]['data'] ? never : TName,
+		data: TMessageMap[TName]['data'],
+		cb: (
+			error: TMessageMap[TName]['error'] | null,
+			result: TMessageMap[TName]['result'],
+		) => void,
+	): void;
+};
+
+export type SendMessageToBundle<TBundleName, TMessageMap extends MessageMap> = {
+	<TName extends keyof TMessageMap & string>(
+		messageName: unknown extends TMessageMap[TName]['data'] ? TName : never,
+		bundleName: TBundleName,
+	): Promise<TMessageMap[TName]['result']>;
+	<TName extends keyof TMessageMap & string>(
+		messageName: unknown extends TMessageMap[TName]['data'] ? TName : never,
+		bundleName: TBundleName,
+		cb: (
+			error: TMessageMap[TName]['error'] | null,
+			result: TMessageMap[TName]['result'],
+		) => void,
+	): void;
+	<TName extends keyof TMessageMap & string>(
+		messageName: unknown extends TMessageMap[TName]['data'] ? never : TName,
+		bundleName: TBundleName,
+		data: TMessageMap[TName]['data'],
+	): Promise<TMessageMap[TName]['result']>;
+	<TName extends keyof TMessageMap & string>(
+		messageName: unknown extends TMessageMap[TName]['data'] ? never : TName,
+		bundleName: TBundleName,
+		data: TMessageMap[TName]['data'],
+		cb: (
+			error: TMessageMap[TName]['error'] | null,
+			result: TMessageMap[TName]['result'],
+		) => void,
+	): void;
+};
+
+export class Replicant<
 	TBundleName extends string,
 	TReplicantMap extends ReplicantMap,
-	TMessageMap extends MessageMap,
-	TForOthers extends boolean = false
-> = NodeCG<
-	'browser',
-	TBundleConfig,
-	TBundleName,
-	TForOthers,
-	TReplicantMap,
-	TMessageMap
-> & {
-	socket: SocketIOClient.Socket;
+	TName extends keyof ReplicantMap & string,
+	TValue extends TReplicantMap[TName] | undefined
+> extends ReplicantCommon<TBundleName, TName, TReplicantMap[TName], TValue> {
+	status: 'undeclared' | 'declared' | 'declaring';
+	on<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((
+					newValue: TReplicantMap[TName],
+					oldValue?: TReplicantMap[TName],
+			  ) => void)
+			: ((data: TReplicantMap[TName]) => void),
+	): this;
+	once<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((
+					newValue: TReplicantMap[TName],
+					oldValue?: TReplicantMap[TName],
+			  ) => void)
+			: ((data: TReplicantMap[TName]) => void),
+	): this;
+	removeListener<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
+		event: TEvent,
+		listener: TEvent extends 'change'
+			? ((
+					newValue: TReplicantMap[TName],
+					oldValue?: TReplicantMap[TName],
+			  ) => void)
+			: ((data: TReplicantMap[TName]) => void),
+	): this;
+	removeAllListeners(event: 'change' | 'declared' | 'fullUpdate'): this;
+}
 
+export type CreateNodecgInstance<
+	TBundleName extends string,
+	TBundleConfig,
+	TReplicantMap extends ReplicantMap,
+	TMessageMap extends MessageMap,
+	TForOtherBundle extends boolean = false
+> = NodecgCommon<TBundleName, TBundleConfig> & {
+	socket: SocketIOClient.Socket;
 	getDialog(
 		name: string,
-		bundle?: string,
+		bundle: string,
 	): ReturnType<ParentNode['querySelector']>;
-	getDialogDocument(name: string, bundle?: TBundleName): Document;
-
+	getDialogDocument(name: string, bundle: TBundleName): Document;
 	findCue(cueName: string): Cue | undefined;
 	playSound(
 		cueName: string,
@@ -47,40 +137,120 @@ export type CreateNodecgInstance<
 	stopSound(cueName: string): void;
 	stopAllSounds(): void;
 	soundReady?: boolean;
-};
+	sendMessageToBundle: SendMessageToBundle<TBundleName, TMessageMap>;
+} & TForOtherBundle extends true
+	? {
+			listenFor<TName extends keyof TMessageMap & string>(
+				messageName: TName,
+				bundleName: TBundleName,
+				handlerFunc: (data: TMessageMap[TName]['data']) => void,
+			): void;
+
+			readReplicant<TName extends keyof TReplicantMap & string>(
+				name: TName,
+				bundleName: TBundleConfig,
+				cb: (value: TReplicantMap[TName]) => void,
+			): void;
+
+			Replicant<
+				TName extends keyof TReplicantMap & string,
+				TOptions extends ReplicantOptions<TReplicantMap[TName]>
+			>(
+				name: TName,
+				bundleName: TBundleName,
+				options?: TOptions,
+			): Replicant<
+				TBundleName,
+				TReplicantMap,
+				TName,
+				TReplicantMap[TName] | undefined
+			>;
+	  }
+	: {
+			getDialogDocument(name: string): Document;
+			getDialog(name: string): ReturnType<ParentNode['querySelector']>;
+
+			sendMessage: SendMessage<TMessageMap>;
+
+			listenFor<TName extends keyof TMessageMap & string>(
+				messageName: TName,
+				handlerFunc: (data: TMessageMap[TName]['data']) => void,
+			): void;
+			listenFor<TName extends keyof TMessageMap & string>(
+				messageName: TName,
+				bundleName: TBundleName,
+				handlerFunc: (data: TMessageMap[TName]['data']) => void,
+			): void;
+
+			readReplicant<TName extends keyof TReplicantMap & string>(
+				name: TName,
+				cb: (value: TReplicantMap[TName]) => void,
+			): void;
+			readReplicant<TName extends keyof TReplicantMap & string>(
+				name: TName,
+				bundleName: TBundleConfig,
+				cb: (value: TReplicantMap[TName]) => void,
+			): void;
+
+			Replicant<
+				TName extends keyof TReplicantMap & string,
+				TOptions extends ReplicantOptions<TReplicantMap[TName]>
+			>(
+				name: TName,
+				options?: TOptions,
+			): Replicant<
+				TBundleName,
+				TReplicantMap,
+				TName,
+				TReplicantMap[TName] | undefined
+			>;
+			Replicant<
+				TName extends keyof TReplicantMap & string,
+				TOptions extends ReplicantOptions<TReplicantMap[TName]>
+			>(
+				name: TName,
+				bundleName: TBundleName,
+				options?: TOptions,
+			): Replicant<
+				TBundleName,
+				TReplicantMap,
+				TName,
+				TReplicantMap[TName] | undefined
+			>;
+	  };
 
 export type CreateNodecgConstructor<
-	TBundleConfig extends {},
 	TBundleName extends string,
+	TBundleConfig,
 	TReplicantMap extends ReplicantMap,
 	TMessageMap extends MessageMap,
-	TForOthers extends boolean = false
+	TForOtherBundle extends boolean = false
 > = {
-	new (bundle: unknown, socket: SocketIOClient.Socket): CreateNodecgInstance<
-		TBundleConfig,
-		TBundleName,
-		TReplicantMap,
-		TMessageMap
-	>;
 	version: string;
 
-	sendMessageToBundle: SendMessageToBundle<
-		TMessageMap,
-		'browser',
-		TBundleName
-	>;
+	sendMessageToBundle: SendMessageToBundle<TBundleName, TMessageMap>;
 
-	Replicant: ReplicantFactory<
+	readReplicant<TName extends keyof TReplicantMap & string>(
+		name: TName,
+		bundleName: TBundleConfig,
+		cb: (value: TReplicantMap[TName]) => void,
+	): void;
+	Replicant<
+		TName extends keyof TReplicantMap & string,
+		TOptions extends ReplicantOptions<TReplicantMap[TName]>
+	>(
+		name: TName,
+		bundleName: TBundleName,
+		options?: TOptions,
+	): Replicant<
 		TBundleName,
 		TReplicantMap,
-		'browser',
-		TForOthers
+		TName,
+		TOptions extends {defaultValue: TReplicantMap[TName]}
+			? TReplicantMap[TName]
+			: TReplicantMap[TName] | undefined
 	>;
-	readReplicant: ReadReplicant<
-		'browser',
-		TForOthers,
-		TReplicantMap,
-		TBundleName
-	>;
-	waitForReplicants: WaitForReplicants<TReplicantMap, TBundleName, 'browser'>;
+	waitForReplicants(
+		...replicants: Array<Replicant<string, {}, string, {}>>
+	): Promise<void>;
 };
