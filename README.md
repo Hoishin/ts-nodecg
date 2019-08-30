@@ -45,8 +45,8 @@ type MessageMap = {
 import {CreateNodecgInstance} from 'ts-nodecg/server';
 
 type NodeCG = CreateNodecgInstance<
-	BundleConfig,
 	'my-bundle', // name of your bundle
+	BundleConfig,
 	ReplicantMap,
 	MessageMap
 >;
@@ -66,14 +66,14 @@ import {CreateNodecgInstance, CreateNodecgConstructor} from 'ts-nodecg/browser';
 declare global {
 	interface Window {
 		nodecg: CreateNodecgInstance<
-			BundleConfig,
 			'my-bundle', // name of your bundle
+			BundleConfig,
 			ReplicantMap,
 			MessageMap
 		>;
 		NodeCG: CreateNodecgConstructor<
-			BundleConfig,
 			'my-bundle', // name of your bundle
+			BundleConfig,
 			ReplicantMap,
 			MessageMap
 		>;
