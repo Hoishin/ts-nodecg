@@ -3,12 +3,14 @@ import {expectType, expectError} from 'tsd';
 
 class CustomError extends Error {}
 
+type GameRep = {gameId: string; players: [string, string]}
+
 type ThisBundle = CreateNodecgInstance<
 	'this-bundle',
 	{},
 	{
 		trashcan: {};
-		game: {gameId: string; players: [string, string]};
+		game: GameRep;
 	},
 	{
 		ping: {};
@@ -53,7 +55,7 @@ const gameRep = nodecg.Replicant('game');
 expectType<typeof gameRep>(nodecg.Replicant('game', {}));
 expectType<typeof gameRep>(nodecg.Replicant('game', 'this-bundle'));
 expectType<typeof gameRep>(nodecg.Replicant('game', 'this-bundle', {}));
-expectType<undefined | {}>(gameRep.value);
+expectType<undefined | GameRep>(gameRep.value);
 gameRep.on('change', (newVal) => {
 	expectType<{gameId: string; players: [string, string]}>(newVal);
 });
