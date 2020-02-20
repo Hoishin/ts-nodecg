@@ -22,7 +22,8 @@
 	],
 	"scripts": {
 		"fmt": "prettier \"**/*.{ts,json,md,yml,yaml}\" --write",
-		"test": "tsd"
+		"test": "tsd",
+		"release": "prettier \"**/*.{ts,json,md,yml,yaml}\" --check && yarn test && standard-version"
 	},
 	"prettier": "@hoishin/prettierrc",
 	"dependencies": {
@@ -35,6 +36,7 @@
 		"@hoishin/prettierrc": "^2.1.1",
 		"@hoishin/tsconfig": "^2.0.0",
 		"prettier": "^1.18.2",
+		"standard-version": "^7.1.0",
 		"tsd": "^0.11.0",
 		"tslib": "^1.10.0",
 		"typescript": "^3.6.4"
