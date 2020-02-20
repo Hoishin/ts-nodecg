@@ -22,8 +22,8 @@
 	],
 	"scripts": {
 		"fmt": "prettier \"**/*.{ts,json,md,yml,yaml}\" --write",
-		"test": "tsd",
-		"release": "prettier \"**/*.{ts,json,md,yml,yaml}\" --check && yarn test && standard-version"
+		"test": "prettier \"**/*.{ts,json,md,yml,yaml}\" --check && tsd",
+		"release": "yarn test && standard-version"
 	},
 	"prettier": "@hoishin/prettierrc",
 	"dependencies": {

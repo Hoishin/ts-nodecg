@@ -89,29 +89,29 @@ export class Replicant<
 	on<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
 		event: TEvent,
 		listener: TEvent extends 'change'
-			? ((
+			? (
 					newValue: TReplicantMap[TName],
 					oldValue?: TReplicantMap[TName],
-			  ) => void)
-			: ((data: TReplicantMap[TName]) => void),
+			  ) => void
+			: (data: TReplicantMap[TName]) => void,
 	): this;
 	once<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
 		event: TEvent,
 		listener: TEvent extends 'change'
-			? ((
+			? (
 					newValue: TReplicantMap[TName],
 					oldValue?: TReplicantMap[TName],
-			  ) => void)
-			: ((data: TReplicantMap[TName]) => void),
+			  ) => void
+			: (data: TReplicantMap[TName]) => void,
 	): this;
 	removeListener<TEvent extends 'change' | 'declared' | 'fullUpdate'>(
 		event: TEvent,
 		listener: TEvent extends 'change'
-			? ((
+			? (
 					newValue: TReplicantMap[TName],
 					oldValue?: TReplicantMap[TName],
-			  ) => void)
-			: ((data: TReplicantMap[TName]) => void),
+			  ) => void
+			: (data: TReplicantMap[TName]) => void,
 	): this;
 	removeAllListeners(event: 'change' | 'declared' | 'fullUpdate'): this;
 }

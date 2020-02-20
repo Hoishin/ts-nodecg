@@ -3,23 +3,23 @@ name: Node CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 13.x]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-      fail-fast: false
+    build:
+        strategy:
+            matrix:
+                node-version: [10.x, 12.x, 13.x]
+                os: [ubuntu-latest, windows-latest, macOS-latest]
+            fail-fast: false
 
-    name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+        name: Node ${{ matrix.node-version }} on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
 
-    steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Test
-        run: yarn test
+        steps:
+            - uses: actions/checkout@v1
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+            - name: Test
+              run: yarn test

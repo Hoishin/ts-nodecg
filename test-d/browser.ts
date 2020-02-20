@@ -3,7 +3,7 @@ import {expectType, expectError} from 'tsd';
 
 class CustomError extends Error {}
 
-type GameRep = {gameId: string; players: [string, string]}
+type GameRep = {gameId: string; players: [string, string]};
 
 type ThisBundle = CreateNodecgInstance<
 	'this-bundle',
