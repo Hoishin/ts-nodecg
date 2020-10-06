@@ -129,9 +129,9 @@
     "@types/node" "*"
 
 "@types/soundjs@^0.6.27":
-  version "0.6.27"
-  resolved "https://registry.yarnpkg.com/@types/soundjs/-/soundjs-0.6.27.tgz#dd2370350eaf7277de5ed55940e3e7d2a016b124"
-  integrity sha1-3SNwNQ6vcnfeXtVZQOPn0qAWsSQ=
+  version "0.6.28"
+  resolved "https://registry.yarnpkg.com/@types/soundjs/-/soundjs-0.6.28.tgz#cf748e90dd78f66c3f54fab41536f60a42c8c002"
+  integrity sha512-K3ktwPvYfQrH+qGEe1tgxC5o4rJC7CVxQmL9Cz9tgVq0oW99PmPfRp1F7YXELibCvV3lieD4E0sUZvnDEKWaPg==
   dependencies:
     "@types/createjs-lib" "*"
     "@types/preloadjs" "*"
