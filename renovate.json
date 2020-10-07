@@ -6,6 +6,5 @@
 		":semanticCommits",
 		":dependencyDashboardApproval"
 	],
-	"rangeStrategy": "pin",
 	"postUpdateOptions": ["yarnDedupeHighest"]
 }
