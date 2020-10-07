@@ -3,9 +3,9 @@
 		"config:base",
 		":prHourlyLimitNone",
 		":prConcurrentLimitNone",
-		":maintainLockFilesWeekly",
-		":semanticCommits"
+		":semanticCommits",
+		":dependencyDashboardApproval"
 	],
-	"rangeStrategy": "update-lockfile",
-	"postUpdateOptions": ["npmDedupe", "yarnDedupeHighest"]
+	"rangeStrategy": "pin",
+	"postUpdateOptions": ["yarnDedupeHighest"]
 }
